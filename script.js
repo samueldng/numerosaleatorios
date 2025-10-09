@@ -70,6 +70,72 @@ document.getElementById('generateButton').addEventListener('click', function() {
     displayAllSets();
 });
 
+document.getElementById('generateAllButton').addEventListener('click', function() {
+    if (!confirm('Gerar todas as 43.758 combinações pode levar um tempo considerável e consumir muitos recursos. Deseja continuar?')) {
+        return;
+    }
+
+    const fixedNumbersInput = document.getElementById('fixedNumbers').value;
+    let currentFixedNumbers = [];
+    if (fixedNumbersInput) {
+        currentFixedNumbers = fixedNumbersInput.split(',').map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
+        const invalidNumbers = currentFixedNumbers.filter(num => num < 1 || num > 25);
+        if (invalidNumbers.length > 0) {
+            alert('Por favor, insira números válidos entre 1 e 25 para os números fixos.');
+            return;
+        }
+        const uniqueFixedNumbers = new Set(currentFixedNumbers);
+        if (uniqueFixedNumbers.size !== currentFixedNumbers.length) {
+            alert('Os números fixos não podem ter repetições.');
+            return;
+        }
+        if (currentFixedNumbers.length > 7) {
+            alert('Você pode inserir no máximo 7 números fixos.');
+            return;
+        }
+    }
+
+    if (currentFixedNumbers.length > 7) {
+        alert('Você pode inserir no máximo 7 números fixos para gerar todas as combinações.');
+        return;
+    }
+
+    const numbersPool = Array.from({length: 25}, (_, i) => i + 1);
+    const availableNumbers = numbersPool.filter(num => !currentFixedNumbers.includes(num));
+
+    const numbersToChoose = 15 - currentFixedNumbers.length;
+
+    if (numbersToChoose < 0) {
+        alert('A quantidade de números fixos excede o limite de 15 para a geração.');
+        return;
+    }
+    if (numbersToChoose > availableNumbers.length) {
+        alert('Não há números suficientes disponíveis para gerar as combinações com os números fixos selecionados.');
+        return;
+    }
+
+    historyOfGeneratedSets = []; // Clear previous results
+
+    generateCombinationsRecursive(availableNumbers, numbersToChoose, [], function(combination) {
+        const newSetOfNumbers = [...currentFixedNumbers, ...combination].sort((a, b) => a - b);
+        historyOfGeneratedSets.push(newSetOfNumbers);
+    });
+
+    displayAllSets();
+});
+
+function generateCombinationsRecursive(array, k, prefix, callback) {
+    if (k === 0) {
+        callback(prefix);
+        return;
+    }
+    for (let i = 0; i < array.length; i++) {
+        const newPrefix = [...prefix, array[i]];
+        const remainingArray = array.slice(i + 1);
+        generateCombinationsRecursive(remainingArray, k - 1, newPrefix, callback);
+    }
+}
+
 function generateUniqueRandomNumbers(min, max, count, excludeNumbers = []) {
     const possibleNumbers = Array.from({length: max - min + 1}, (_, i) => min + i)
                                .filter(num => !excludeNumbers.includes(num));
