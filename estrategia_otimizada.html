@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estratégia Otimizada - Lotofácil</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #007bff;
+        }
+        .info-box {
+            background: #e7f3ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .formula {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .numeros {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .numero {
+            padding: 8px 12px;
+            border-radius: 50%;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+        .par {
+            background: #d4edda;
+            color: #155724;
+        }
+        .impar {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .destaque {
+            background: #cce7ff;
+            color: #004085;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Estratégia Otimizada para Lotofácil</h1>
+        <p>Maximize suas chances de acertar 15 ou vários jogos com 14 números</p>
+        
+        <div class="info-box">
+            <h3>📊 Estratégia:</h3>
+            <p><strong>Objetivo:</strong> Garantir ao menos 14 números corretos em todas as combinações</p>
+            <p><strong>Princípio:</strong> Fixar a maioria dos números e variar apenas alguns</p>
+            <p><strong>Vantagem:</strong> Mesmo errando 1 número, ainda acerta 14 em várias combinações</p>
+        </div>
+        
+        <div class="info-box warning">
+            <h3>🧮 Fórmula Matemática:</h3>
+            <div class="formula">
+                Se fixarmos N números e variarmos (15-N) números:<br>
+                Total de combinações = C(25-N, 15-N)<br><br>
+                
+                Exemplos:<br>
+                • Fixar 14 números, variar 1 = C(11,1) = 11 combinações<br>
+                • Fixar 13 números, variar 2 = C(12,2) = 66 combinações<br>
+                • Fixar 12 números, variar 3 = C(13,3) = 286 combinações
+            </div>
+        </div>
+        
+        <h2>🔧 Configuração da Estratégia</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div>
+                <label for="numerosFixos"><strong>Quantidade de Números Fixos:</strong></label>
+                <select id="numerosFixos">
+                    <option value="12">12 números fixos (variar 3) - 286 combinações</option>
+                    <option value="13" selected>13 números fixos (variar 2) - 66 combinações</option>
+                    <option value="14">14 números fixos (variar 1) - 11 combinações</option>
+                </select>
+                
+                <label for="numerosUsuario"><strong>Seus 15 Números Preferidos:</strong></label>
+                <input type="text" id="numerosUsuario" placeholder="Ex: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15">
+                <small>Separados por vírgula</small>
+            </div>
+            
+            <div>
+                <label for="estrategia"><strong>Estratégia de Seleção:</strong></label>
+                <select id="estrategia">
+                    <option value="frequentes">Basear nos números mais frequentes</option>
+                    <option value="usuario" selected>Usar os números que você escolheu</option>
+                    <option value="aleatorios">Gerar números aleatórios</option>
+                </select>
+                
+                <button id="gerarCombinacoes">🎲 Gerar Combinações Otimizadas</button>
+                <button id="buscarHistorico">🔍 Analisar Histórico de Sorteios</button>
+            </div>
+        </div>
+        
+        <div id="resultados" style="margin-top: 30px;"></div>
+    </div>
+    
+    <script>
+        // Números de 1 a 25
+        const TODOS_NUMEROS = Array.from({length: 25}, (_, i) => i + 1);
+        const PARES = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24];
+        const IMPARES = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25];
+        
+        // Função para calcular combinações
+        function calcularCombinacoes(n, k) {
+            if (k > n) return 0;
+            if (k === 0 || k === n) return 1;
+            
+            let result = 1;
+            for (let i = 0; i < k; i++) {
+                result *= (n - i);
+                result /= (i + 1);
+            }
+            return Math.round(result);
+        }
+        
+        // Função para gerar combinações
+        function gerarCombinacoes(array, k) {
+            let result = [];
+            
+            function combinations(prefix, remaining, needed) {
+                if (needed === 0) {
+                    result.push([...prefix]);
+                    return;
+                }
+                if (remaining.length < needed) return;
+                
+                // Incluir o primeiro elemento
+                combinations([...prefix, remaining[0]], remaining.slice(1), needed - 1);
+                // Excluir o primeiro elemento
+                combinations(prefix, remaining.slice(1), needed);
+            }
+            
+            combinations([], array, k);
+            return result;
+        }
+        
+        // Função para validar e parsear números
+        function parseNumeros(input) {
+            return input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 25);
+        }
+        
+        // Função para gerar combinações otimizadas
+        function gerarEstrategiaOtimizada(numerosFixos, numerosUsuario) {
+            const fixosCount = parseInt(numerosFixos);
+            const variaveisCount = 15 - fixosCount;
+            
+            // Selecionar números fixos
+            let fixos;
+            if (numerosUsuario.length >= fixosCount) {
+                fixos = numerosUsuario.slice(0, fixosCount);
+            } else {
+                // Completar com números aleatórios se necessário
+                const disponiveis = TODOS_NUMEROS.filter(n => !numerosUsuario.includes(n));
+                const adicionais = disponiveis.slice(0, fixosCount - numerosUsuario.length);
+                fixos = [...numerosUsuario, ...adicionais];
+            }
+            
+            // Números disponíveis para variar
+            const disponiveis = TODOS_NUMEROS.filter(n => !fixos.includes(n));
+            
+            // Gerar combinações variando os números
+            const variacoes = gerarCombinacoes(disponiveis, variaveisCount);
+            
+            // Criar combinações finais
+            const combinacoes = variacoes.map(variacao => {
+                return [...fixos, ...variacao].sort((a, b) => a - b);
+            });
+            
+            return {
+                fixos: fixos,
+                combinacoes: combinacoes,
+                totalCombinacoes: combinacoes.length,
+                variaveisCount: variaveisCount
+            };
+        }
+        
+        // Evento para gerar combinações
+        document.getElementById('gerarCombinacoes').addEventListener('click', function() {
+            const numerosFixos = document.getElementById('numerosFixos').value;
+            const numerosUsuarioInput = document.getElementById('numerosUsuario').value;
+            const numerosUsuario = numerosUsuarioInput ? parseNumeros(numerosUsuarioInput) : [];
+            
+            if (numerosUsuarioInput && numerosUsuario.length !== 15) {
+                alert(`Você inseriu ${numerosUsuario.length} números. Por favor, insira exatamente 15 números.`);
+                return;
+            }
+            
+            const resultado = gerarEstrategiaOtimizada(numerosFixos, numerosUsuario);
+            
+            // Mostrar resultados
+            const resultadosDiv = document.getElementById('resultados');
+            let html = `
+                <div class="info-box success">
+                    <h3>✅ Estratégia Gerada com Sucesso!</h3>
+                    <p><strong>Números Fixos (${resultado.fixos.length}):</strong> ${resultado.fixos.sort((a, b) => a - b).join(', ')}</p>
+                    <p><strong>Total de Combinações:</strong> ${resultado.totalCombinacoes}</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${resultado.fixos.filter(n => n % 2 === 0).length}</div>
+                        <div>Pares Fixos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${resultado.fixos.filter(n => n % 2 !== 0).length}</div>
+                        <div>Ímpares Fixos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${resultado.variaveisCount}</div>
+                        <div>Números Variáveis</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${resultado.totalCombinacoes}</div>
+                        <div>Combinações</div>
+                    </div>
+                </div>
+                
+                <h3>📋 Combinações Geradas:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Combinação</th>
+                            <th>Pares</th>
+                            <th>Ímpares</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            resultado.combinacoes.forEach((combinacao, index) => {
+                const pares = combinacao.filter(n => n % 2 === 0).length;
+                const impares = combinacao.filter(n => n % 2 !== 0).length;
+                
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <div class="numeros">
+                                ${combinacao.map(n => 
+                                    `<span class="numero ${n % 2 === 0 ? 'par' : 'impar'} ${resultado.fixos.includes(n) ? 'destaque' : ''}">${n}</span>`
+                                ).join('')}
+                            </div>
+                        </td>
+                        <td>${pares}</td>
+                        <td>${impares}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+                
+                <div class="info-box">
+                    <h3>🎯 Como Funciona:</h3>
+                    <p>Se <strong>${resultado.fixos.length} dos seus números fixos</strong> forem sorteados:</p>
+                    <ul>
+                        <li>Você terá <strong>1 combinação com 15 acertos</strong> (a que tem os números variáveis corretos)</li>
+                        <li>E <strong>${resultado.totalCombinacoes - 1} combinações com 14 acertos</strong> (as que têm números variáveis errados)</li>
+                    </ul>
+                    <p><strong>Probabilidade:</strong> Se acertar ${resultado.fixos.length} números fixos, garante ${resultado.totalCombinacoes} combinações com pelo menos 14 acertos!</p>
+                </div>
+            `;
+            
+            resultadosDiv.innerHTML = html;
+        });
+        
+        // Evento para buscar histórico
+        document.getElementById('buscarHistorico').addEventListener('click', function() {
+            const resultadosDiv = document.getElementById('resultados');
+            resultadosDiv.innerHTML = `
+                <div class="info-box">
+                    <h3>🔍 Análise de Histórico</h3>
+                    <p>Para uma análise completa do histórico de sorteios, seria necessário:</p>
+                    <ol>
+                        <li>Conectar a uma API de resultados históricos</li>
+                        <li>Analisar frequência de números</li>
+                        <li>Identificar padrões estatísticos</li>
+                        <li>Comparar com suas combinações</li>
+                    </ol>
+                    <p><strong>Recomendação:</strong> Use a ferramenta <a href="index_pares_impares.html" target="_blank">"Comparar com Números Sorteados"</a> 
+                    para testar suas combinações contra resultados reais.</p>
+                </div>
+            `;
+        });
+        
+        // Exemplo inicial
+        document.getElementById('numerosUsuario').value = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";
+    </script>
+</body>
+</html>

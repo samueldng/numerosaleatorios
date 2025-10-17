@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probabilidade de 14 Acertos - Lotofácil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #007bff;
+        }
+        .info-box {
+            background: #e7f3ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .formula {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .numeros {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .numero {
+            padding: 8px 12px;
+            border-radius: 50%;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+        .par {
+            background: #d4edda;
+            color: #155724;
+        }
+        .impar {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .acerto {
+            background: #28a745 !important;
+            color: white !important;
+        }
+        .destaque {
+            background: #cce7ff;
+            color: #004085;
+            font-weight: bold;
+        }
+        .progress-container {
+            width: 100%;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #007bff;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Probabilidade de Acertar 14 Números na Lotofácil</h1>
+        <p>Análise matemática e geração de combinações para 14 acertos</p>
+        
+        <div class="info-box">
+            <h3>📊 Probabilidade de 14 Acertos:</h3>
+            <div class="formula">
+                Fórmula: C(15,14) × C(10,1) / C(25,15)<br><br>
+                
+                C(15,14) = 15 (escolher 14 dos 15 números sorteados)<br>
+                C(10,1) = 10 (escolher 1 dos 10 números não sorteados)<br>
+                C(25,15) = 3.268.760 (total de combinações possíveis)<br><br>
+                
+                Probabilidade = (15 × 10) / 3.268.760 = 150 / 3.268.760<br>
+                Probabilidade ≈ 0,00459% ou 1 em 21.792
+            </div>
+        </div>
+        
+        <div class="info-box warning">
+            <h3>🧮 Análise Detalhada:</h3>
+            <p><strong>Para acertar 14 números:</strong></p>
+            <ul>
+                <li>Você precisa acertar 14 dos 15 números sorteados</li>
+                <li>Você pode errar apenas 1 número</li>
+                <li>Existem 15 maneiras de escolher quais 14 números acertar</li>
+                <li>Existem 10 números que não foram sorteados</li>
+                <li>Total de combinações com 14 acertos: 15 × 10 = 150</li>
+            </ul>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">150</div>
+                <div>Combinações com 14 acertos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1 em 21.792</div>
+                <div>Probabilidade</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0,00459%</div>
+                <div>Chance de acerto</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">R$ 2.000</div>
+                <div>Prêmio médio</div>
+            </div>
+        </div>
+        
+        <h2>🔧 Gerar Combinações com 14 Acertos</h2>
+        
+        <div style="margin: 20px 0;">
+            <label for="numerosSorteados"><strong>Informe os 15 números sorteados:</strong></label>
+            <input type="text" id="numerosSorteados" placeholder="Ex: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15" style="width: 100%; padding: 10px; margin: 10px 0;">
+            <button id="gerarCombinacoes">🔢 Gerar Combinações com 14 Acertos</button>
+        </div>
+        
+        <div id="resultados" style="margin-top: 30px;"></div>
+    </div>
+    
+    <script>
+        // Função para calcular combinações
+        function calcularCombinacoes(n, k) {
+            if (k > n) return 0;
+            if (k === 0 || k === n) return 1;
+            
+            let result = 1;
+            for (let i = 0; i < k; i++) {
+                result *= (n - i);
+                result /= (i + 1);
+            }
+            return Math.round(result);
+        }
+        
+        // Função para parsear números
+        function parseNumeros(input) {
+            return input.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num) && num >= 1 && num <= 25);
+        }
+        
+        // Função para gerar combinações com 14 acertos
+        function gerarCombinacoes14Acertos(numerosSorteados) {
+            if (numerosSorteados.length !== 15) {
+                throw new Error('É necessário informar exatamente 15 números sorteados');
+            }
+            
+            // Todos os números de 1 a 25
+            const todosNumeros = Array.from({length: 25}, (_, i) => i + 1);
+            
+            // Números não sorteados
+            const numerosNaoSorteados = todosNumeros.filter(num => !numerosSorteados.includes(num));
+            
+            // Gerar combinações com 14 acertos
+            const combinacoes = [];
+            
+            // Para cada número sorteado, criamos uma combinação excluindo esse número
+            // e substituindo por cada número não sorteado
+            for (let i = 0; i < numerosSorteados.length; i++) {
+                const numeroExcluido = numerosSorteados[i];
+                const numerosRestantes = numerosSorteados.filter((_, index) => index !== i);
+                
+                // Para cada número não sorteado, criamos uma combinação
+                for (let j = 0; j < numerosNaoSorteados.length; j++) {
+                    const numeroSubstituto = numerosNaoSorteados[j];
+                    const combinacao = [...numerosRestantes, numeroSubstituto].sort((a, b) => a - b);
+                    
+                    combinacoes.push({
+                        combinacao: combinacao,
+                        acertoExcluido: numeroExcluido,
+                        substituto: numeroSubstituto,
+                        index: combinacoes.length + 1
+                    });
+                }
+            }
+            
+            return combinacoes;
+        }
+        
+        // Função para destacar números
+        function destacarNumeros(combinacao, numerosSorteados) {
+            const sorteadosSet = new Set(numerosSorteados);
+            return combinacao.map(num => {
+                const acertou = sorteadosSet.has(num);
+                return {
+                    numero: num,
+                    acertou: acertou
+                };
+            });
+        }
+        
+        // Evento para gerar combinações
+        document.getElementById('gerarCombinacoes').addEventListener('click', function() {
+            try {
+                const numerosSorteadosInput = document.getElementById('numerosSorteados').value;
+                const numerosSorteados = parseNumeros(numerosSorteadosInput);
+                
+                if (numerosSorteados.length !== 15) {
+                    alert(`Por favor, informe exatamente 15 números. Você informou ${numerosSorteados.length}.`);
+                    return;
+                }
+                
+                // Verificar duplicatas
+                const numerosUnicos = new Set(numerosSorteados);
+                if (numerosUnicos.size !== numerosSorteados.length) {
+                    alert('Há números duplicados. Cada número deve ser único.');
+                    return;
+                }
+                
+                // Gerar combinações
+                const combinacoes = gerarCombinacoes14Acertos(numerosSorteados);
+                
+                // Mostrar resultados
+                const resultadosDiv = document.getElementById('resultados');
+                let html = `
+                    <div class="info-box success">
+                        <h3>✅ Combinações com 14 Acertos Geradas!</h3>
+                        <p><strong>Números sorteados:</strong> ${numerosSorteados.sort((a, b) => a - b).join(', ')}</p>
+                        <p><strong>Total de combinações com 14 acertos:</strong> ${combinacoes.length}</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">${combinacoes.length}</div>
+                            <div>Combinações</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">R$ ${(combinacoes.length * 3.5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                            <div>Custo Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">R$ ${(combinacoes.length * 2000).toLocaleString('pt-BR')}</div>
+                            <div>Retorno Estimado</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${(combinacoes.length / 3268760 * 100).toFixed(4)}%</div>
+                            <div>Cobertura</div>
+                        </div>
+                    </div>
+                    
+                    <h4>📋 Lista de Combinações:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Combinação (15 números)</th>
+                                <th>Acerto Excluído</th>
+                                <th>Substituto</th>
+                                <th>14 Acertos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                // Mostrar as primeiras 50 combinações para não sobrecarregar a interface
+                const combinacoesMostradas = combinacoes.slice(0, 50);
+                
+                combinacoesMostradas.forEach(combinacao => {
+                    const numerosDestacados = destacarNumeros(combinacao.combinacao, numerosSorteados);
+                    
+                    html += `
+                        <tr>
+                            <td>${combinacao.index}</td>
+                            <td>
+                                <div class="numeros">
+                                    ${numerosDestacados.map(n => 
+                                        `<span class="numero ${n.numero % 2 === 0 ? 'par' : 'impar'} ${n.acertou ? 'acerto' : ''}">${n.numero}</span>`
+                                    ).join('')}
+                                </div>
+                            </td>
+                            <td style="text-align: center; font-weight: bold;">${combinacao.acertoExcluido}</td>
+                            <td style="text-align: center; font-weight: bold; color: #dc3545;">${combinacao.substituto}</td>
+                            <td style="text-align: center; font-weight: bold; color: #28a745;">14</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                        </tbody>
+                    </table>
+                `;
+                
+                // Se houver mais combinações, mostrar aviso
+                if (combinacoes.length > 50) {
+                    html += `
+                        <div class="info-box warning">
+                            <p><strong>ℹ️ Mostrando apenas as primeiras 50 combinações.</strong></p>
+                            <p>Total de combinações geradas: ${combinacoes.length}</p>
+                            <p>Para ver todas, seria necessário gerar ${combinacoes.length} combinações.</p>
+                        </div>
+                    `;
+                }
+                
+                html += `
+                    <div class="info-box">
+                        <h4>📊 Análise Estatística:</h4>
+                        <ul>
+                            <li><strong>Probabilidade de acertar 14 números:</strong> 1 em 21.792</li>
+                            <li><strong>Custo para cobrir todas as combinações:</strong> R$ ${(combinacoes.length * 3.5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</li>
+                            <li><strong>Retorno esperado com prêmio de R$ 2.000:</strong> R$ ${(combinacoes.length * 2000).toLocaleString('pt-BR')}</li>
+                            <li><strong>ROI (Retorno sobre Investimento):</strong> ${(((combinacoes.length * 2000) - (combinacoes.length * 3.5)) / (combinacoes.length * 3.5) * 100).toFixed(2)}%</li>
+                        </ul>
+                    </div>
+                `;
+                
+                resultadosDiv.innerHTML = html;
+                
+            } catch (error) {
+                alert('Erro ao gerar combinações: ' + error.message);
+            }
+        });
+        
+        // Exemplo inicial
+        document.getElementById('numerosSorteados').value = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";
+    </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Combinação Específica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #007bff;
+        }
+        .resultado {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .sucesso {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        .info {
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+            color: #004085;
+        }
+        .numeros {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .numero {
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+        .par {
+            background: #d4edda;
+            color: #155724;
+        }
+        .impar {
+            background: #fff3cd;
+            color: #856404;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .analise {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Verificar Combinação Específica</h1>
+        
+        <div class="info resultado">
+            <h3>📋 Combinação a Verificar:</h3>
+            <p><strong>01, 02, 03, 04, 05, 06, 09, 12, 13, 14, 15, 17, 19, 20, 22</strong></p>
+        </div>
+
+        <div class="analise">
+            <h3>📊 Análise da Combinação:</h3>
+            <div id="analise"></div>
+        </div>
+
+        <button onclick="verificarCombinacao()">Verificar se está nas 1.287 Combinações</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        const PARES = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24];
+        const IMPARES = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25];
+
+        // Combinação a verificar
+        const combinacaoUsuario = [1, 2, 3, 4, 5, 6, 9, 12, 13, 14, 15, 17, 19, 20, 22];
+
+        // Analisar a combinação ao carregar
+        window.onload = function() {
+            analisarCombinacao();
+        };
+
+        function analisarCombinacao() {
+            const pares = combinacaoUsuario.filter(n => n % 2 === 0);
+            const impares = combinacaoUsuario.filter(n => n % 2 !== 0);
+
+            const analiseDiv = document.getElementById('analise');
+            analiseDiv.innerHTML = `
+                <p><strong>Total de números:</strong> ${combinacaoUsuario.length}</p>
+                <p><strong>Números PARES:</strong> ${pares.length} → ${pares.join(', ')}</p>
+                <p><strong>Números ÍMPARES:</strong> ${impares.length} → ${impares.join(', ')}</p>
+                
+                <div class="numeros">
+                    ${combinacaoUsuario.map(n => 
+                        `<span class="numero ${n % 2 === 0 ? 'par' : 'impar'}">${n}</span>`
+                    ).join('')}
+                </div>
+            `;
+        }
+
+        function verificarCombinacao() {
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = '<p>Verificando...</p>';
+
+            // Separar pares e ímpares
+            const pares = combinacaoUsuario.filter(n => n % 2 === 0).sort((a, b) => a - b);
+            const impares = combinacaoUsuario.filter(n => n % 2 !== 0).sort((a, b) => a - b);
+
+            // Verificar regras
+            const temExatamente7Pares = pares.length === 7;
+            const temExatamente8Impares = impares.length === 8;
+            const total15Numeros = combinacaoUsuario.length === 15;
+            const todosParesSaoValidos = pares.every(n => PARES.includes(n));
+            const todosImparesSaoValidos = impares.every(n => IMPARES.includes(n));
+            const semDuplicatas = new Set(combinacaoUsuario).size === combinacaoUsuario.length;
+
+            let mensagem = '';
+            let classeCSS = '';
+
+            if (total15Numeros && temExatamente7Pares && temExatamente8Impares && 
+                todosParesSaoValidos && todosImparesSaoValidos && semDuplicatas) {
+                
+                mensagem = `
+                    <h2>✅ SIM! Esta combinação ESTÁ entre as 1.287 possíveis!</h2>
+                    <p><strong>Análise:</strong></p>
+                    <ul>
+                        <li>✅ 15 números no total</li>
+                        <li>✅ 7 números PARES: ${pares.join(', ')}</li>
+                        <li>✅ 8 números ÍMPARES: ${impares.join(', ')}</li>
+                        <li>✅ Todos os números são válidos (1-25)</li>
+                        <li>✅ Sem duplicatas</li>
+                    </ul>
+                    <p style="margin-top: 20px;"><strong>Para gerar esta combinação específica:</strong></p>
+                    <ol>
+                        <li>Abra <code>index_pares_impares.html</code></li>
+                        <li>Digite os 7 números PARES: <strong>${pares.join(', ')}</strong></li>
+                        <li>Clique em "Gerar Todas as Combinações"</li>
+                        <li>Esta combinação aparecerá entre as 1.287 geradas!</li>
+                    </ol>
+                    <p style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-top: 15px;">
+                        <strong>💡 Dica:</strong> Como os 8 ímpares são ${impares.join(', ')}, 
+                        esta é UMA das 1.287 maneiras de escolher 8 dos 13 ímpares disponíveis.
+                    </p>
+                `;
+                classeCSS = 'sucesso';
+            } else {
+                mensagem = `
+                    <h2>❌ NÃO! Esta combinação não segue as regras.</h2>
+                    <p><strong>Problemas encontrados:</strong></p>
+                    <ul>
+                        ${!total15Numeros ? '<li>❌ Não tem 15 números (tem ' + combinacaoUsuario.length + ')</li>' : ''}
+                        ${!temExatamente7Pares ? '<li>❌ Não tem exatamente 7 pares (tem ' + pares.length + ')</li>' : ''}
+                        ${!temExatamente8Impares ? '<li>❌ Não tem exatamente 8 ímpares (tem ' + impares.length + ')</li>' : ''}
+                        ${!semDuplicatas ? '<li>❌ Há números duplicados</li>' : ''}
+                    </ul>
+                `;
+                classeCSS = 'info';
+            }
+
+            resultadoDiv.innerHTML = `<div class="resultado ${classeCSS}">${mensagem}</div>`;
+        }
+    </script>
+</body>
+</html>
