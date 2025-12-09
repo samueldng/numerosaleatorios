@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Sena - Gerador Inteligente</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: white;
+        }
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .example {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        
+        /* Estilos para números da Mega Sena - Estilo Balanceada */
+        .numero {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 50%;
+            margin: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .numero:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* Todos os números usam o mesmo estilo elegante */
+        .numero.dezena-1,
+        .numero.dezena-2,
+        .numero.dezena-3,
+        .numero.dezena-4,
+        .numero.dezena-5,
+        .numero.dezena-6 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .destaque-acerto {
+            background: #28a745 !important;
+            color: white !important;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .strategy-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .strategy-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 2px solid #764ba2;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+            border-color: #764ba2;
+        }
+        
+        .strategy-card.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #764ba2;
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .stats-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Estilos gerais para botões */
+        button {
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        /* Estilo para resultado da comparação */
+        #resultadoComparacao {
+            border-radius: 12px !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2) !important;
+        }
+        
+        /* Estilo para inputs */
+        .input-group input[type="text"] {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input[type="text"]:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Voltar para Lotofácil</a>
+        
+        <h1 style="font-size: 32px; margin-bottom: 10px;">
+            <span style="font-size: 48px; display: inline-block; margin-right: 10px; vertical-align: middle;">🎰</span>
+            <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; vertical-align: middle;">Mega Sena - Gerador Inteligente</span>
+        </h1>
+        <h2 style="color: #667eea; font-size: 18px; font-weight: 500;">Estratégias Avançadas para 6 Números (1-60)</h2>
+        
+        <div class="info-box">
+            <h3>📋 Regras da Mega Sena:</h3>
+            <ul>
+                <li><strong>6 números de 1 a 60</strong></li>
+                <li><strong>Distribuição por Dezenas:</strong> Pelo menos 1 número de cada dezena (1-10, 11-20, 21-30, 31-40, 41-50, 51-60)</li>
+                <li><strong>Balanceamento Par/Ímpar:</strong> 3 pares + 3 ímpares (recomendado)</li>
+                <li><strong>Números Fixos:</strong> Opcional (máximo 3 números)</li>
+            </ul>
+            
+            <h3>🎯 Estratégias Disponíveis:</h3>
+            <div class="strategy-selector">
+                <div class="strategy-card" data-strategy="balanced">
+                    <strong>⚖️ Balanceada</strong><br>
+                    <small>3 pares + 3 ímpares<br>1 número por dezena</small>
+                </div>
+                <div class="strategy-card" data-strategy="par-heavy">
+                    <strong>🔵 Par Pesado</strong><br>
+                    <small>4 pares + 2 ímpares<br>Distribuição equilibrada</small>
+                </div>
+                <div class="strategy-card" data-strategy="impar-heavy">
+                    <strong>🟡 Ímpar Pesado</strong><br>
+                    <small>2 pares + 4 ímpares<br>Distribuição equilibrada</small>
+                </div>
+                <div class="strategy-card" data-strategy="random">
+                    <strong>🎲 Aleatória</strong><br>
+                    <small>Sem restrições<br>Totalmente aleatória</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="fixedNumbers">
+                <strong>Números Fixos (Opcional - Máximo 3):</strong>
+            </label>
+            <div class="example">
+                Exemplo: 7, 23, 45 (ou deixe vazio)
+            </div>
+            <input type="text" id="fixedNumbers" placeholder="Ex: 7, 23, 45">
+        </div>
+        
+        <button id="generateButton" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold;">🎲 Gerar Uma Combinação</button>
+        <button id="generateMultipleButton" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold;">🔄 Gerar 10 Combinações</button>
+        
+        <!-- Seção de Comparação -->
+        <div class="info-box" style="margin-top: 30px;">
+            <h3>🔍 Comparar com Resultados da Mega Sena</h3>
+            <p>Insira os 6 números sorteados para verificar seus acertos:</p>
+            
+            <div class="input-group">
+                <label for="numerosSorteados">
+                    <strong>6 Números Sorteados:</strong>
+                </label>
+                <div class="example">
+                    Exemplo: 7, 15, 23, 34, 45, 58
+                </div>
+                <input type="text" id="numerosSorteados" placeholder="Ex: 7, 15, 23, 34, 45, 58">
+            </div>
+            
+            <button id="compararButton" style="background: white; color: #667eea; font-weight: bold; border: 2px solid white; padding: 12px 30px; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);">📊 Comparar Resultados</button>
+            
+            <button id="buscarResultadosButton" style="background: rgba(255, 255, 255, 0.2); color: white; border: 2px solid white; width: 100%; margin-top: 10px; padding: 12px 20px; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);">
+                🌐 Buscar Últimos Resultados da Mega Sena
+            </button>
+            
+            <div id="resultadoComparacao" style="margin-top: 20px; padding: 15px; background: white; border-radius: 5px; display: none; color: #333;"></div>
+        </div>
+        
+        <div id="stats" class="stats-box" style="display: none;"></div>
+        
+        <div id="result" class="result-box"></div>
+    </div>
+    
+    <script src="script_mega_sena.js"></script>
+</body>
+</html>
+
