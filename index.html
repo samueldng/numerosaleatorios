@@ -121,8 +121,12 @@
                 🌐 Buscar Últimos Resultados da Lotofácil Automaticamente
             </button>
             
+            <button id="carregarHistoricoCompletoButton" style="background: #28a745; color: white; width: 100%; margin-bottom: 10px;">
+                📚 Carregar Histórico Completo de Sorteios (Evitar Combinações Repetidas)
+            </button>
+            
             <button id="buscarHistoricoButton" style="background: #6f42c1; color: white; width: 100%;">
-                📚 Analisar Histórico de Concursos
+                📊 Analisar Histórico de Concursos
             </button>
             
             <div id="resultadoComparacao" style="margin-top: 20px; padding: 15px; background: white; border-radius: 5px; display: none;"></div>
@@ -134,6 +138,69 @@
     <script src="script_pares_impares.js"></script>
     
     <script>
+        // Store historical lottery results to avoid generating duplicate combinations
+        window.historicalLotteryResults = new Set();
+        
+        // Function to check if a combination has been drawn before
+        function isCombinationDrawnBefore(combination) {
+            if (!window.historicalLotteryResults || window.historicalLotteryResults.size === 0) {
+                return false; // No historical data loaded
+            }
+            
+            // Sort the combination to match the stored format
+            const sortedCombination = [...combination].sort((a, b) => a - b);
+            // Check if this combination exists in our historical results
+            return window.historicalLotteryResults.has(JSON.stringify(sortedCombination));
+        }
+        
+        // Function to update the historical results count in the UI
+        function updateHistoricalResultsCount() {
+            // This will be called after loading historical data
+        }
+        
+        // Modified function to generate combinations that have never been drawn
+        function generateUniqueCombinations(availableNumbers, numbersToChoose, fixedNumbers, maxAttempts = 1000) {
+            const uniqueCombinations = [];
+            const seenCombinations = new Set();
+            let attempts = 0;
+            
+            while (uniqueCombinations.length < maxAttempts && attempts < maxAttempts * 10) {
+                attempts++;
+                
+                // Generate a random combination
+                const combination = generateRandomCombination(availableNumbers, numbersToChoose, fixedNumbers);
+                
+                // Create a string representation to check for duplicates
+                const combinationStr = JSON.stringify(combination.sort((a, b) => a - b));
+                
+                // Check if we've already generated this combination
+                if (!seenCombinations.has(combinationStr)) {
+                    seenCombinations.add(combinationStr);
+                    
+                    // Check if this combination has been drawn before in history
+                    if (!isCombinationDrawnBefore(combination)) {
+                        uniqueCombinations.push(combination);
+                    }
+                }
+            }
+            
+            return uniqueCombinations;
+        }
+        
+        // Helper function to generate a random combination
+        function generateRandomCombination(availableNumbers, numbersToChoose, fixedNumbers) {
+            // Fisher-Yates shuffle implementation
+            const shuffled = [...availableNumbers];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            // Take the first numbersToChoose elements and combine with fixed numbers
+            const selectedNumbers = shuffled.slice(0, numbersToChoose);
+            return [...fixedNumbers, ...selectedNumbers].sort((a, b) => a - b);
+        }
+        
         // Função para comparar resultados
         document.getElementById('compararButton').addEventListener('click', function() {
             const numerosSorteadosInput = document.getElementById('numerosSorteados').value;
@@ -637,7 +704,7 @@
                 
                 melhoresResultados.forEach(resultado => {
                     if (resultado.acertos15 > 0) {
-                        html += `<li><strong>Concurso ${resultado.concurso} (${resultado.data}):</strong> ${resultado.acertos15} JACKPOT(S)!</li>`;
+                        html += `<li><strong>Concurso ${resultado.concurso} (${resultado.data}):</strong> ${resultado.acertos15} JACKPOTS(S)!</li>`;
                     } else if (resultado.acertos14 > 0) {
                         html += `<li><strong>Concurso ${resultado.concurso} (${resultado.data}):</strong> ${resultado.acertos14} combinação(ões) com 14 acertos</li>`;
                     }
