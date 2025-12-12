@@ -29,27 +29,36 @@
             margin: 10px 0;
         }
         
-        /* Estilos para números */
+        /* Estilos para números - layout inspirado na Mega Sena */
         .numero {
             display: inline-block;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
             text-align: center;
             border-radius: 50%;
             margin: 2px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
         
-        .par {
-            background: #d4edda;
-            color: #155724;
+        .numero:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 18px rgba(102, 126, 234, 0.45);
         }
         
-        .impar {
-            background: #fff3cd;
-            color: #856404;
+        .numero.par {
+            background: linear-gradient(135deg, #28a745 0%, #5ad975 100%);
+            color: #fff;
+        }
+        
+        .numero.impar {
+            background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%);
+            color: #fff;
         }
         
         .destaque-acerto {
@@ -148,6 +157,7 @@
         </div>
         
         <button id="generateButton">🎲 Gerar Uma Combinação</button>
+        <button id="generateHistoricalButton" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);">🎯 Gerar Combinação Histórica</button>
         <button id="generateAllButton">🔄 Gerar Todas as 1.287 Combinações</button>
         
         <!-- Seção de Comparação -->

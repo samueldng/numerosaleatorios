@@ -9,6 +9,16 @@ let isGenerating = false;
 const PARES = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]; // 12 pares
 const IMPARES = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25]; // 13 ímpares
 
+// Pools históricos (fonte: frequência divulgada em portais estatísticos)
+// Quentes: mais sorteados historicamente
+const HOT_NUMBERS = [20, 10, 25, 11, 13, 24, 14, 3, 1, 4];
+// Frios: exemplos de dezenas menos frequentes/atrasadas (lista ilustrativa)
+const COLD_NUMBERS = [6, 8, 12, 15, 16, 17, 18, 19, 21, 22, 23];
+// Médios: demais ímpares para dar variedade (exclui quentes e frios)
+const MEDIUM_NUMBERS = IMPARES.filter(
+    n => !HOT_NUMBERS.includes(n) && !COLD_NUMBERS.includes(n)
+);
+
 document.getElementById('fixedNumbers').addEventListener('input', function(event) {
     let input = event.target.value;
     let cursorPosition = event.target.selectionStart;
@@ -126,6 +136,48 @@ document.getElementById('generateButton').addEventListener('click', function() {
     }
 });
 
+// Gerar combinação usando estratégia histórica (quentes + frios + médios) para os 8 ímpares
+document.getElementById('generateHistoricalButton').addEventListener('click', function() {
+    const fixedNumbersInput = document.getElementById('fixedNumbers').value;
+    let paresFixos = [];
+    
+    if (fixedNumbersInput) {
+        paresFixos = fixedNumbersInput.split(',').map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
+        
+        const invalidNumbers = paresFixos.filter(num => num < 1 || num > 25);
+        if (invalidNumbers.length > 0) {
+            alert('Por favor, insira números válidos entre 1 e 25.');
+            return;
+        }
+        
+        const numerosImpares = paresFixos.filter(num => num % 2 !== 0);
+        if (numerosImpares.length > 0) {
+            alert('ATENÇÃO: Todos os números fixos devem ser PARES!\nNúmeros ímpares encontrados: ' + numerosImpares.join(', '));
+            return;
+        }
+        
+        const uniqueFixedNumbers = new Set(paresFixos);
+        if (uniqueFixedNumbers.size !== paresFixos.length) {
+            alert('Os números fixos não podem ter repetições.');
+            return;
+        }
+        
+        if (paresFixos.length !== 7) {
+            alert('Você deve inserir exatamente 7 números PARES fixos.\nAtualmente você tem: ' + paresFixos.length + ' números.');
+            return;
+        }
+    } else {
+        alert('Por favor, insira exatamente 7 números PARES (ex: 2, 4, 6, 8, 10, 12, 14)');
+        return;
+    }
+    
+    const imparesHistoricos = generateHistoricalOddNumbers(8);
+    const newSetOfNumbers = [...paresFixos, ...imparesHistoricos].sort((a, b) => a - b);
+    
+    window.historyOfGeneratedSets.push(newSetOfNumbers);
+    displayAllSets();
+});
+
 document.getElementById('generateAllButton').addEventListener('click', function() {
     if (isGenerating) {
         alert('Uma geração já está em andamento. Por favor, aguarde.');
@@ -184,6 +236,35 @@ function generateRandomOddNumbers(count) {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled.slice(0, count);
+}
+
+// Estratégia histórica para os 8 ímpares: mistura quentes, frios e médios
+function generateHistoricalOddNumbers(count) {
+    const picked = [];
+    const used = new Set();
+    
+    const addFromPool = (pool, target) => {
+        const available = pool.filter(n => !used.has(n));
+        const shuffled = [...available].sort(() => Math.random() - 0.5);
+        for (let i = 0; i < Math.min(target, shuffled.length) && picked.length < count; i++) {
+            picked.push(shuffled[i]);
+            used.add(shuffled[i]);
+        }
+    };
+    
+    // 3 quentes, 2 frios, 3 médios (ajusta se faltar)
+    addFromPool(HOT_NUMBERS.filter(n => n % 2 === 1), 3);
+    addFromPool(COLD_NUMBERS.filter(n => n % 2 === 1), 2);
+    addFromPool(MEDIUM_NUMBERS, 3);
+    
+    // Completar se não chegou ao total
+    if (picked.length < count) {
+        const remaining = IMPARES.filter(n => !used.has(n));
+        const shuffled = remaining.sort(() => Math.random() - 0.5);
+        picked.push(...shuffled.slice(0, count - picked.length));
+    }
+    
+    return picked.slice(0, count);
 }
 
 // Function to fetch historical lottery results (simplified version without API calls)
@@ -531,9 +612,9 @@ function displayAllSets() {
     
     // Adicionar cabeçalho informativo
     const header = document.createElement('div');
-    header.style.cssText = 'background: #e7f3ff; padding: 15px; margin-bottom: 20px; border-radius: 5px; border-left: 4px solid #007bff;';
-    header.innerHTML = `<strong>Total: ${window.historyOfGeneratedSets.length.toLocaleString('pt-BR')} combinações</strong><br>
-        <small>Cada linha tem 7 números PARES + 8 números ÍMPARES = 15 números</small>`;
+    header.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); text-align: left;';
+    header.innerHTML = `<strong style="font-size: 18px;">Total: ${window.historyOfGeneratedSets.length.toLocaleString('pt-BR')} combinações</strong><br>
+        <small style="opacity: 0.9;">Cada linha tem 7 números PARES + 8 números ÍMPARES = 15 números</small>`;
     resultDiv.appendChild(header);
     
     window.historyOfGeneratedSets.forEach((setOfNumbers, index) => {
@@ -542,17 +623,8 @@ function displayAllSets() {
         
         setOfNumbers.forEach(num => {
             const span = document.createElement('span');
-            span.className = 'number-item';
-            
-            // Destacar pares e ímpares com cores diferentes
-            if (num % 2 === 0) {
-                span.style.backgroundColor = '#d4edda'; // Verde claro para pares
-                span.style.fontWeight = 'bold';
-            } else {
-                span.style.backgroundColor = '#fff3cd'; // Amarelo claro para ímpares
-            }
-            
-            span.textContent = num;
+            span.className = `numero ${num % 2 === 0 ? 'par' : 'impar'}`;
+            span.textContent = num.toString().padStart(2, '0');
             lineDiv.appendChild(span);
         });
         resultDiv.appendChild(lineDiv);

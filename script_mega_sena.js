@@ -15,6 +15,10 @@ const DEZENAS = {
 // Todos os números de 1 a 60
 const TODOS_NUMEROS = Array.from({length: 60}, (_, i) => i + 1);
 
+// Números quentes e frios (base histórica simples)
+const HOT_NUMBERS = [5, 10, 23, 34, 37, 42, 53];
+const COLD_NUMBERS = [8, 9, 26, 27, 44, 50, 60];
+
 // Números pares e ímpares
 const PARES = TODOS_NUMEROS.filter(n => n % 2 === 0);
 const IMPARES = TODOS_NUMEROS.filter(n => n % 2 === 1);
@@ -134,6 +138,8 @@ function generateCombination(strategy, fixedNumbers = []) {
     switch(strategy) {
         case 'balanced':
             return generateBalanced(combination, remaining);
+        case 'equilibrado':
+            return generateEquilibrado(combination, remaining);
         case 'par-heavy':
             return generateParHeavy(combination, remaining);
         case 'impar-heavy':
@@ -155,8 +161,9 @@ function generateBalanced(fixed, remaining) {
     // Calcular quantos pares e ímpares ainda precisamos
     const targetPares = 3;
     const targetImpares = 3;
-    const needPares = Math.max(0, targetPares - fixedPares);
-    const needImpares = Math.max(0, targetImpares - fixedImpares);
+    // Usamos let porque vamos decrementar à medida que escolhemos números
+    let needPares = Math.max(0, targetPares - fixedPares);
+    let needImpares = Math.max(0, targetImpares - fixedImpares);
     
     // Garantir pelo menos 1 número de cada dezena não coberta
     const dezenasNecessarias = [1, 2, 3, 4, 5, 6].filter(d => !usedDezenas.has(d));
@@ -209,6 +216,83 @@ function generateBalanced(fixed, remaining) {
         combination.push(escolhido);
     }
     
+    return combination.sort((a, b) => a - b);
+}
+
+// Estratégia Equilibrada Histórica:
+// - 2-3 números quentes + 2-3 números frios
+// - Balancear pares/ímpares (3/3) e baixos/altos (3 <=30, 3 >30)
+function generateEquilibrado(fixed, remaining) {
+    const combination = [...fixed];
+    const used = new Set(combination);
+
+    let evenCount = combination.filter(n => n % 2 === 0).length;
+    let oddCount = combination.length - evenCount;
+    let lowCount = combination.filter(n => n <= 30).length;
+    let highCount = combination.length - lowCount;
+
+    const addNumber = (num) => {
+        if (used.has(num)) return false;
+        combination.push(num);
+        used.add(num);
+        if (num % 2 === 0) evenCount++; else oddCount++;
+        if (num <= 30) lowCount++; else highCount++;
+        return true;
+    };
+
+    const pickFromPool = (pool, maxPick) => {
+        const available = pool.filter(n => !used.has(n));
+        if (available.length === 0) return;
+        const shuffled = available.sort(() => Math.random() - 0.5);
+        for (let i = 0; i < Math.min(maxPick, shuffled.length) && combination.length < 6; i++) {
+            addNumber(shuffled[i]);
+        }
+    };
+
+    // 2-3 quentes
+    const hotTarget = Math.min(3, Math.max(2, remaining));
+    pickFromPool(HOT_NUMBERS, hotTarget);
+
+    // 2-3 frios (ajustando para não ultrapassar 6 números)
+    const remainingAfterHot = 6 - combination.length;
+    const coldTarget = Math.max(0, Math.min(3, remainingAfterHot));
+    pickFromPool(COLD_NUMBERS, coldTarget);
+
+    // Recontar após hot/cold
+    evenCount = combination.filter(n => n % 2 === 0).length;
+    oddCount = combination.length - evenCount;
+    lowCount = combination.filter(n => n <= 30).length;
+    highCount = combination.length - lowCount;
+
+    // Balancear par/ímpar até 3/3
+    const needEven = Math.max(0, 3 - evenCount);
+    const needOdd = Math.max(0, 3 - oddCount);
+    if (needEven > 0) {
+        pickFromPool(PARES, needEven);
+    }
+    if (needOdd > 0 && combination.length < 6) {
+        pickFromPool(IMPARES, needOdd);
+    }
+
+    // Balancear baixos/altos (1-30 / 31-60)
+    const LOW = TODOS_NUMEROS.filter(n => n <= 30);
+    const HIGH = TODOS_NUMEROS.filter(n => n > 30);
+    const needLow = Math.max(0, 3 - lowCount);
+    const needHigh = Math.max(0, 3 - highCount);
+    if (needLow > 0 && combination.length < 6) {
+        pickFromPool(LOW, needLow);
+    }
+    if (needHigh > 0 && combination.length < 6) {
+        pickFromPool(HIGH, needHigh);
+    }
+
+    // Completar qualquer slot faltante sem repetir
+    while (combination.length < 6) {
+        const available = TODOS_NUMEROS.filter(n => !used.has(n));
+        if (available.length === 0) break;
+        addNumber(available[Math.floor(Math.random() * available.length)]);
+    }
+
     return combination.sort((a, b) => a - b);
 }
 
