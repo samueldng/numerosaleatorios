@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quina - Gerador Inteligente</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .info-box {
+            background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: white;
+        }
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .example {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        
+        /* Estilos para números da Quina */
+        .numero {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 50%;
+            margin: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .numero:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(156, 39, 176, 0.5);
+        }
+        
+        .numero.par {
+            background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+        }
+        
+        .numero.impar {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+        
+        .numero.muito-frequente {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        .numero.frequente {
+            background: linear-gradient(135deg, #ff5722 0%, #d84315 100%);
+        }
+        
+        .destaque-acerto {
+            background: #28a745 !important;
+            color: white !important;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .strategy-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .strategy-card {
+            background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+            color: white;
+            border: 2px solid #6a1b9a;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(156, 39, 176, 0.5);
+            border-color: #9c27b0;
+        }
+        
+        .strategy-card.active {
+            background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+            color: white;
+            border-color: #9c27b0;
+            box-shadow: 0 6px 25px rgba(156, 39, 176, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .stats-box {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(106, 27, 154, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #9c27b0;
+            box-shadow: 0 2px 8px rgba(156, 39, 176, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(156, 39, 176, 0.4);
+        }
+        
+        .probability-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .probability-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        .probability-box th,
+        .probability-box td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .numero-frequente {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Voltar para Página Principal</a>
+        
+        <h1 style="font-size: 32px; margin-bottom: 10px;">
+            <span style="font-size: 48px; display: inline-block; margin-right: 10px; vertical-align: middle;">🎯</span>
+            <span style="background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; vertical-align: middle;">Quina - Gerador Inteligente</span>
+        </h1>
+        <h2 style="color: #9c27b0; font-size: 18px; font-weight: 500;">Estratégias Baseadas em Estatísticas para 5-15 Números (1-80)</h2>
+        
+        <div class="info-box">
+            <h3>🎯 Regras da Quina:</h3>
+            <ul>
+                <li><strong>Escolha de 5 a 15 números de 1 a 80</strong></li>
+                <li><strong>São sorteados 5 números</strong></li>
+                <li><strong>Sorteios de segunda a sábado às 20h</strong></li>
+                <li><strong>Cada número tem chance igual de sair</strong></li>
+            </ul>
+            
+            <div class="probability-box">
+                <h3>📊 Probabilidades Oficiais (Quina - 5 acertos):</h3>
+                <table>
+                    <tr>
+                        <th>Números Jogados</th>
+                        <th>Probabilidade de Quina</th>
+                    </tr>
+                    <tr><td>5 números</td><td>1 em 24.040.016</td></tr>
+                    <tr><td>6 números</td><td>1 em 4.006.669</td></tr>
+                    <tr><td>7 números</td><td>1 em 1.144.763</td></tr>
+                    <tr><td>8 números</td><td>1 em 429.286</td></tr>
+                    <tr><td>9 números</td><td>1 em 190.794</td></tr>
+                    <tr><td>10 números</td><td>1 em 95.396</td></tr>
+                    <tr><td>15 números</td><td>1 em 8.005</td></tr>
+                </table>
+                <p style="margin-top: 10px;"><small><strong>📌 Quanto mais números marcados, maior a chance (mas mais cara a aposta)</strong></small></p>
+            </div>
+            
+            <div class="probability-box">
+                <h3>🔥 Top 10 Números Mais Frequentes (Histórico Total):</h3>
+                <div>
+                    <span class="numero-frequente">04 (~494×)</span>
+                    <span class="numero-frequente">52 (~480×)</span>
+                    <span class="numero-frequente">26 (~476×)</span>
+                    <span class="numero-frequente">49 (~470×)</span>
+                    <span class="numero-frequente">31 (~466×)</span>
+                    <span class="numero-frequente">44 (~464×)</span>
+                    <span class="numero-frequente">16 (~463×)</span>
+                    <span class="numero-frequente">39 (~461×)</span>
+                    <span class="numero-frequente">29 (~460×)</span>
+                    <span class="numero-frequente">05 (~460×)</span>
+                </div>
+                
+                <h3 style="margin-top: 15px;">🆕 Números Mais Frequentes em 2025:</h3>
+                <div>
+                    <span class="numero-frequente">52 (17×)</span>
+                    <span class="numero-frequente">13 (16×)</span>
+                    <span class="numero-frequente">15 (15×)</span>
+                    <span class="numero-frequente">23 (15×)</span>
+                    <span class="numero-frequente">48 (15×)</span>
+                    <span class="numero-frequente">19 (14×)</span>
+                    <span class="numero-frequente">31 (14×)</span>
+                    <span class="numero-frequente">41 (14×)</span>
+                    <span class="numero-frequente">60 (14×)</span>
+                </div>
+            </div>
+            
+            <p style="margin-top: 15px; padding: 10px; background: rgba(255, 255, 255, 0.3); border-radius: 5px;">
+                <strong>⚠️ Observação Importante:</strong> Números "quentes" ou "frios" são observações históricas. 
+                Cada número tem sempre chance igual (1/80) em cada sorteio. Use como referência estatística.
+            </p>
+            
+            <h3 style="margin-top: 20px;">🎯 Estratégias Disponíveis:</h3>
+            <div class="strategy-selector">
+                <div class="strategy-card" data-strategy="historico-top10">
+                    <strong>🔥 Top 10 Histórico</strong><br>
+                    <small>Números mais sorteados<br>de todos os tempos</small>
+                </div>
+                <div class="strategy-card" data-strategy="2025-quentes">
+                    <strong>🆕 Quentes 2025</strong><br>
+                    <small>Números mais frequentes<br>em 2025</small>
+                </div>
+                <div class="strategy-card" data-strategy="balanceada">
+                    <strong>⚖️ Balanceada</strong><br>
+                    <small>3 pares + 2 ímpares<br>(padrão comum)</small>
+                </div>
+                <div class="strategy-card" data-strategy="par-impar">
+                    <strong>🔵 2 Pares + 3 Ímpares</strong><br>
+                    <small>Outro padrão<br>frequente</small>
+                </div>
+                <div class="strategy-card" data-strategy="grupos">
+                    <strong>📊 Distribuição por Grupos</strong><br>
+                    <small>Equilibra faixas:<br>1-20, 21-40, 41-60, 61-80</small>
+                </div>
+                <div class="strategy-card" data-strategy="mista">
+                    <strong>🎨 Mista (50/50)</strong><br>
+                    <small>50% frequentes<br>50% aleatórios</small>
+                </div>
+                <div class="strategy-card" data-strategy="random">
+                    <strong>🎲 Aleatória Total</strong><br>
+                    <small>Sem restrições<br>Totalmente aleatória</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="quantidadeNumeros">
+                <strong>Quantidade de Números (5 a 15):</strong>
+            </label>
+            <select id="quantidadeNumeros" style="width: 80%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                <option value="5">5 números (jogo mínimo)</option>
+                <option value="6">6 números</option>
+                <option value="7" selected>7 números (recomendado)</option>
+                <option value="8">8 números</option>
+                <option value="9">9 números</option>
+                <option value="10">10 números</option>
+                <option value="11">11 números</option>
+                <option value="12">12 números</option>
+                <option value="13">13 números</option>
+                <option value="14">14 números</option>
+                <option value="15">15 números (jogo máximo)</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="fixedNumbers">
+                <strong>Números Fixos (Opcional - Máximo 3):</strong>
+            </label>
+            <div class="example">
+                Exemplo: 04, 52, 26 (números mais frequentes)
+            </div>
+            <input type="text" id="fixedNumbers" placeholder="Ex: 04, 52, 26">
+        </div>
+        
+        <button id="generateButton" style="background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%); box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; color: white;">🎯 Gerar Uma Combinação</button>
+        <button id="generateMultipleButton" style="background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%); box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; color: white;">🔄 Gerar 10 Combinações</button>
+        <button id="generateOptimizedButton" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%); box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; color: white;">🚀 Gerar 50 Combinações Otimizadas</button>
+        
+        <!-- Seção de Comparação -->
+        <div class="info-box" style="margin-top: 30px;">
+            <h3>🔍 Comparar com Resultados da Quina</h3>
+            <p>Insira os 5 números sorteados para verificar seus acertos:</p>
+            
+            <div class="input-group">
+                <label for="numerosSorteados">
+                    <strong>5 Números Sorteados:</strong>
+                </label>
+                <div class="example">
+                    Exemplo: 04, 26, 31, 52, 49
+                </div>
+                <input type="text" id="numerosSorteados" placeholder="Ex: 04, 26, 31, 52, 49">
+            </div>
+            
+            <button id="compararButton" style="background: white; color: #9c27b0; font-weight: bold; border: 2px solid white; padding: 12px 30px; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);">📊 Comparar Resultados</button>
+            
+            <div id="resultadoComparacao" style="margin-top: 20px; padding: 15px; background: white; border-radius: 5px; display: none; color: #333;"></div>
+        </div>
+        
+        <div id="stats" class="stats-box" style="display: none;"></div>
+        
+        <div id="result" class="result-box"></div>
+    </div>
+    
+    <script src="script_quina.js"></script>
+</body>
+</html>

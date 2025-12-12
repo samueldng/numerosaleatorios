@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timemania - Gerador Inteligente</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .info-box {
+            background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: white;
+        }
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .example {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        
+        /* Estilos para números da Timemania */
+        .numero {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 50%;
+            margin: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 200, 83, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .numero:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.5);
+        }
+        
+        .numero.par {
+            background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+        }
+        
+        .numero.impar {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+        
+        .numero.frequente {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        .destaque-acerto {
+            background: #28a745 !important;
+            color: white !important;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .strategy-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .strategy-card {
+            background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+            color: white;
+            border: 2px solid #009624;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+        }
+        
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 200, 83, 0.5);
+            border-color: #00c853;
+        }
+        
+        .strategy-card.active {
+            background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+            color: white;
+            border-color: #00c853;
+            box-shadow: 0 6px 25px rgba(0, 200, 83, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .stats-box {
+            background: linear-gradient(135deg, rgba(0, 200, 83, 0.1) 0%, rgba(0, 150, 36, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #00c853;
+            box-shadow: 0 2px 8px rgba(0, 200, 83, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 200, 83, 0.3);
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.4);
+        }
+        
+        /* Estilos gerais para botões */
+        button {
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        /* Estilo para resultado da comparação */
+        #resultadoComparacao {
+            border-radius: 12px !important;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.2) !important;
+        }
+        
+        /* Estilo para inputs */
+        .input-group input[type="text"] {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input[type="text"]:focus {
+            border-color: #00c853;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.1);
+        }
+        
+        .probability-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .probability-box ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        
+        .historical-patterns {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .numero-frequente {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Voltar para Página Principal</a>
+        
+        <h1 style="font-size: 32px; margin-bottom: 10px;">
+            <span style="font-size: 48px; display: inline-block; margin-right: 10px; vertical-align: middle;">⚽</span>
+            <span style="background: linear-gradient(135deg, #00c853 0%, #009624 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; vertical-align: middle;">Timemania - Gerador Inteligente</span>
+        </h1>
+        <h2 style="color: #00c853; font-size: 18px; font-weight: 500;">Estratégias Matemáticas e Estatísticas para 10 Números (1-80)</h2>
+        
+        <div class="info-box">
+            <h3>⚽ Regras da Timemania:</h3>
+            <ul>
+                <li><strong>Escolha 10 números de 1 a 80</strong></li>
+                <li><strong>São sorteados 7 números</strong></li>
+                <li><strong>Cada número tem chance igual de sair</strong></li>
+            </ul>
+            
+            <div class="probability-box">
+                <h3>📊 Probabilidades Oficiais:</h3>
+                <ul>
+                    <li><strong>7 acertos:</strong> 1 em 26.472.637 🏆</li>
+                    <li><strong>6 acertos:</strong> 1 em 216.103</li>
+                    <li><strong>5 acertos:</strong> 1 em 5.220</li>
+                    <li><strong>4 acertos:</strong> 1 em 276</li>
+                    <li><strong>3 acertos:</strong> 1 em 29</li>
+                </ul>
+            </div>
+            
+            <div class="historical-patterns">
+                <h3>📈 Padrões Históricos Mais Comuns:</h3>
+                <p><strong>Distribuição Par/Ímpar:</strong></p>
+                <ul>
+                    <li>✅ 4 pares + 3 ímpares (mais comum)</li>
+                    <li>✅ 3 pares + 4 ímpares (mais comum)</li>
+                </ul>
+                
+                <p style="margin-top: 15px;"><strong>Números Historicamente Mais Frequentes:</strong></p>
+                <div>
+                    <span class="numero-frequente">20</span>
+                    <span class="numero-frequente">21</span>
+                    <span class="numero-frequente">61</span>
+                    <span class="numero-frequente">70</span>
+                    <span class="numero-frequente">66</span>
+                    <span class="numero-frequente">72</span>
+                    <span class="numero-frequente">80</span>
+                </div>
+                
+                <p style="margin-top: 15px;"><strong>Últimos Sorteios:</strong></p>
+                <ul>
+                    <li>Concurso 2329: 29, 36, 39, 61, 70, 75, 77</li>
+                    <li>Concurso 2328: 1, 15, 29, 49, 57, 59, 73</li>
+                    <li>Concurso 2327: 4, 7, 35, 42, 46, 71, 73</li>
+                </ul>
+            </div>
+            
+            <p style="margin-top: 15px; padding: 10px; background: rgba(255, 255, 255, 0.3); border-radius: 5px;">
+                <strong>⚠️ Observação Importante:</strong> A frequência passada não aumenta probabilidade futura; 
+                serve apenas como referência estatística para criar padrões e filtros.
+            </p>
+            
+            <h3 style="margin-top: 20px;">🎯 Estratégias Disponíveis:</h3>
+            <div class="strategy-selector">
+                <div class="strategy-card" data-strategy="balanced">
+                    <strong>⚖️ Balanceada</strong><br>
+                    <small>4 pares + 6 ímpares<br>Distribuição equilibrada</small>
+                </div>
+                <div class="strategy-card" data-strategy="par-heavy">
+                    <strong>🔵 4P + 3I (Padrão Histórico)</strong><br>
+                    <small>4 pares + 3 ímpares<br>Mais comum nos sorteios</small>
+                </div>
+                <div class="strategy-card" data-strategy="impar-heavy">
+                    <strong>🟡 3P + 4I (Padrão Histórico)</strong><br>
+                    <small>3 pares + 4 ímpares<br>Mais comum nos sorteios</small>
+                </div>
+                <div class="strategy-card" data-strategy="frequentes">
+                    <strong>⭐ Números Frequentes</strong><br>
+                    <small>Prioriza números<br>mais sorteados</small>
+                </div>
+                <div class="strategy-card" data-strategy="grupos">
+                    <strong>📊 Grupos Numéricos</strong><br>
+                    <small>Distribuição por faixas<br>1-20, 21-40, 41-60, 61-80</small>
+                </div>
+                <div class="strategy-card" data-strategy="random">
+                    <strong>🎲 Aleatória Total</strong><br>
+                    <small>Sem restrições<br>Totalmente aleatória</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="fixedNumbers">
+                <strong>Números Fixos (Opcional - Máximo 5):</strong>
+            </label>
+            <div class="example">
+                Exemplo: 20, 21, 61, 70, 80 (números frequentes)
+            </div>
+            <input type="text" id="fixedNumbers" placeholder="Ex: 20, 21, 61, 70, 80">
+        </div>
+        
+        <div class="info-box" style="margin-top: 20px;">
+            <h3>⚽ Time do Coração - Seleção Inteligente</h3>
+            <p>Escolha uma estratégia para selecionar automaticamente o Time do Coração com base em estatísticas históricas:</p>
+            
+            <div class="strategy-selector" style="margin-bottom: 15px;">
+                <div class="strategy-card" data-time-strategy="mais-frequente">
+                    <strong>🏆 Atlético/GO</strong><br>
+                    <small>Time com maior<br>frequência histórica</small>
+                </div>
+                <div class="strategy-card" data-time-strategy="top-frequentes">
+                    <strong>⭐ Top 9 Frequentes</strong><br>
+                    <small>Sorteia entre os<br>times mais frequentes</small>
+                </div>
+                <div class="strategy-card" data-time-strategy="balanceado">
+                    <strong>⚖️ Balanceado</strong><br>
+                    <small>Times com frequência<br>média-alta</small>
+                </div>
+                <div class="strategy-card" data-time-strategy="aleatorio">
+                    <strong>🎲 Aleatório</strong><br>
+                    <small>Qualquer um dos<br>80 times</small>
+                </div>
+            </div>
+            
+            <div id="timeCoracaoSelecionado" style="background: rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 8px; margin-top: 15px; display: none;">
+                <strong>⚽ Time Selecionado:</strong> <span id="nomeTimeSelecionado"></span>
+            </div>
+            
+            <div class="probability-box" style="margin-top: 15px; font-size: 14px;">
+                <strong>📊 Top 9 Times Mais Frequentes (Histórico):</strong><br>
+                1º Atlético/GO • 2º Moto Club/MA • 3º Treze/PB • 4º Vitória/BA • 5º CRB/AL<br>
+                6º Bahia/BA • 7º Fluminense/RJ • 8º Botafogo/PB • 9º Atlético/MG
+            </div>
+            
+            <p style="margin-top: 15px; padding: 10px; background: rgba(255, 255, 255, 0.3); border-radius: 5px; font-size: 14px;">
+                <strong>⚠️ Observação:</strong> A frequência histórica não aumenta a probabilidade futura. 
+                Cada time tem sempre 1/80 de chance em cada sorteio. Use como referência estatística.
+            </p>
+        </div>
+        
+        <button id="generateButton" style="background: linear-gradient(135deg, #00c853 0%, #009624 100%); box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold;">⚽ Gerar Uma Combinação</button>
+        <button id="generateMultipleButton" style="background: linear-gradient(135deg, #00c853 0%, #009624 100%); box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold;">🔄 Gerar 10 Combinações</button>
+        <button id="generateOptimizedButton" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%); box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold;">🚀 Gerar 50 Combinações Otimizadas</button>
+        
+        <!-- Seção de Comparação -->
+        <div class="info-box" style="margin-top: 30px;">
+            <h3>🔍 Comparar com Resultados da Timemania</h3>
+            <p>Insira os 7 números sorteados para verificar seus acertos:</p>
+            
+            <div class="input-group">
+                <label for="numerosSorteados">
+                    <strong>7 Números Sorteados:</strong>
+                </label>
+                <div class="example">
+                    Exemplo: 29, 36, 39, 61, 70, 75, 77
+                </div>
+                <input type="text" id="numerosSorteados" placeholder="Ex: 29, 36, 39, 61, 70, 75, 77">
+            </div>
+            
+            <button id="compararButton" style="background: white; color: #00c853; font-weight: bold; border: 2px solid white; padding: 12px 30px; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);">📊 Comparar Resultados</button>
+            
+            <div id="resultadoComparacao" style="margin-top: 20px; padding: 15px; background: white; border-radius: 5px; display: none; color: #333;"></div>
+        </div>
+        
+        <div id="stats" class="stats-box" style="display: none;"></div>
+        
+        <div id="result" class="result-box"></div>
+    </div>
+    
+    <script src="script_timemania.js"></script>
+</body>
+</html>
