@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotomania - Gerador Inteligente</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .info-box {
+            background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: white;
+        }
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .example {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        
+        /* Estilos para números da Lotomania */
+        .numero {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 3px;
+            font-weight: bold;
+            font-size: 16px;
+            background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .numero:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.5);
+        }
+        
+        .numero.par {
+            background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%);
+        }
+        
+        .numero.impar {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+        
+        .numero.muito-frequente {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        .numero.frequente {
+            background: linear-gradient(135deg, #ff5722 0%, #d84315 100%);
+        }
+        
+        .destaque-acerto {
+            background: #28a745 !important;
+            color: white !important;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .strategy-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .strategy-card {
+            background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%);
+            color: white;
+            border: 2px solid #008ba3;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+        }
+        
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 188, 212, 0.5);
+            border-color: #00bcd4;
+        }
+        
+        .strategy-card.active {
+            background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%);
+            color: white;
+            border-color: #00bcd4;
+            box-shadow: 0 6px 25px rgba(0, 188, 212, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .stats-box {
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.1) 0%, rgba(0, 139, 163, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #00bcd4;
+            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
+        }
+        
+        .probability-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .probability-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        .probability-box th,
+        .probability-box td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .numero-frequente {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 3px;
+            font-weight: bold;
+        }
+        
+        .number-line {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Voltar para Página Principal</a>
+        
+        <h1 style="font-size: 32px; margin-bottom: 10px;">
+            <span style="font-size: 48px; display: inline-block; margin-right: 10px; vertical-align: middle;">🎰</span>
+            <span style="background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; vertical-align: middle;">Lotomania - Gerador Inteligente</span>
+        </h1>
+        <h2 style="color: #00bcd4; font-size: 18px; font-weight: 500;">Estratégias Baseadas em Estatísticas para 50 Números (00-99)</h2>
+        
+        <div class="info-box">
+            <h3>🎰 Regras da Lotomania:</h3>
+            <ul>
+                <li><strong>Marque 50 números de 00 a 99</strong></li>
+                <li><strong>São sorteados 20 números</strong></li>
+                <li><strong>Prêmios para 15, 16, 17, 18, 19 ou 20 acertos</strong></li>
+                <li><strong>Sorteios normalmente às terças, quintas e sábados</strong></li>
+                <li><strong>Valor fixo da aposta: R$ 2,50</strong></li>
+            </ul>
+            
+            <div class="probability-box">
+                <h3>📊 Probabilidades Oficiais:</h3>
+                <table>
+                    <tr>
+                        <th>Acertos</th>
+                        <th>Probabilidade</th>
+                    </tr>
+                    <tr><td>20 acertos (JACKPOT)</td><td>1 em 11.372.635.150</td></tr>
+                    <tr><td>19 acertos</td><td>1 em 279.303.832</td></tr>
+                    <tr><td>18 acertos</td><td>1 em 2.919.832</td></tr>
+                    <tr><td>17 acertos</td><td>1 em 73.720</td></tr>
+                    <tr><td>16 acertos</td><td>1 em 3.845</td></tr>
+                    <tr><td>15 acertos</td><td>1 em 339</td></tr>
+                </table>
+                <p style="margin-top: 10px;"><small><strong>📌 Prêmio fixo para 15 acertos: R$ 4,60</strong></small></p>
+            </div>
+            
+            <div class="probability-box">
+                <h3>🔥 Top 20 Números Mais Frequentes (Histórico Total):</h3>
+                <div>
+                    <span class="numero-frequente">05 (~145×)</span>
+                    <span class="numero-frequente">06 (~143×)</span>
+                    <span class="numero-frequente">07 (~142×)</span>
+                    <span class="numero-frequente">08 (~141×)</span>
+                    <span class="numero-frequente">10 (~140×)</span>
+                    <span class="numero-frequente">11 (~139×)</span>
+                    <span class="numero-frequente">12 (~138×)</span>
+                    <span class="numero-frequente">13 (~137×)</span>
+                    <span class="numero-frequente">14 (~136×)</span>
+                    <span class="numero-frequente">15 (~135×)</span>
+                    <span class="numero-frequente">21 (~134×)</span>
+                    <span class="numero-frequente">22 (~133×)</span>
+                    <span class="numero-frequente">23 (~132×)</span>
+                    <span class="numero-frequente">24 (~131×)</span>
+                    <span class="numero-frequente">25 (~130×)</span>
+                    <span class="numero-frequente">31 (~129×)</span>
+                    <span class="numero-frequente">32 (~128×)</span>
+                    <span class="numero-frequente">33 (~127×)</span>
+                    <span class="numero-frequente">41 (~126×)</span>
+                    <span class="numero-frequente">42 (~125×)</span>
+                </div>
+                
+                <h3 style="margin-top: 15px;">🆕 Números Mais Frequentes em 2025:</h3>
+                <div>
+                    <span class="numero-frequente">05 (12×)</span>
+                    <span class="numero-frequente">06 (11×)</span>
+                    <span class="numero-frequente">07 (11×)</span>
+                    <span class="numero-frequente">10 (10×)</span>
+                    <span class="numero-frequente">11 (10×)</span>
+                    <span class="numero-frequente">12 (9×)</span>
+                    <span class="numero-frequente">13 (9×)</span>
+                    <span class="numero-frequente">14 (8×)</span>
+                    <span class="numero-frequente">15 (8×)</span>
+                    <span class="numero-frequente">21 (8×)</span>
+                </div>
+            </div>
+            
+            <p style="margin-top: 15px; padding: 10px; background: rgba(255, 255, 255, 0.3); border-radius: 5px;">
+                <strong>⚠️ Observação Importante:</strong> Números "quentes" ou "frios" são observações históricas. 
+                Cada número tem sempre chance igual (20/100 = 20%) de sair em cada sorteio. Use como referência estatística.
+            </p>
+            
+            <h3 style="margin-top: 20px;">🎯 Estratégias Disponíveis:</h3>
+            <div class="strategy-selector">
+                <div class="strategy-card" data-strategy="historico-top20">
+                    <strong>🔥 Top 20 Histórico</strong><br>
+                    <small>Números mais sorteados<br>de todos os tempos</small>
+                </div>
+                <div class="strategy-card" data-strategy="2025-quentes">
+                    <strong>🆕 Quentes 2025</strong><br>
+                    <small>Números mais frequentes<br>em 2025</small>
+                </div>
+                <div class="strategy-card" data-strategy="balanceada">
+                    <strong>⚖️ Balanceada</strong><br>
+                    <small>25 pares + 25 ímpares<br>(padrão comum)</small>
+                </div>
+                <div class="strategy-card" data-strategy="par-impar">
+                    <strong>🔵 Distribuição Par/Ímpar</strong><br>
+                    <small>Equilíbrio entre<br>pares e ímpares</small>
+                </div>
+                <div class="strategy-card" data-strategy="grupos">
+                    <strong>📊 Distribuição por Grupos</strong><br>
+                    <small>Equilibra faixas:<br>00-24, 25-49, 50-74, 75-99</small>
+                </div>
+                <div class="strategy-card" data-strategy="mista">
+                    <strong>🎨 Mista (50/50)</strong><br>
+                    <small>50% frequentes<br>50% aleatórios</small>
+                </div>
+                <div class="strategy-card" data-strategy="random">
+                    <strong>🎲 Aleatória Total</strong><br>
+                    <small>Sem restrições<br>Totalmente aleatória</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="quantidadeNumeros">
+                <strong>Quantidade de Números (padrão 50):</strong>
+            </label>
+            <select id="quantidadeNumeros" style="width: 80%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                <option value="50" selected>50 números (padrão da Lotomania)</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="fixedNumbers">
+                <strong>Números Fixos (Opcional):</strong>
+            </label>
+            <div class="example">
+                Exemplo: 05, 06, 07, 08, 10 (números mais frequentes)
+            </div>
+            <input type="text" id="fixedNumbers" placeholder="Ex: 05, 06, 07, 08, 10">
+        </div>
+        
+        <button id="generateButton" style="background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%); box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; color: white;">🎯 Gerar Uma Combinação</button>
+        <button id="generateMultipleButton" style="background: linear-gradient(135deg, #00bcd4 0%, #008ba3 100%); box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; color: white;">🔄 Gerar 10 Combinações</button>
+        <button id="generateOptimizedButton" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%); box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3); border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; color: white;">🚀 Gerar 50 Combinações Otimizadas</button>
+        
+        <!-- Seção de Comparação -->
+        <div class="info-box" style="margin-top: 30px;">
+            <h3>🔍 Comparar com Resultados da Lotomania</h3>
+            <p>Insira os 20 números sorteados para verificar seus acertos:</p>
+            
+            <div class="input-group">
+                <label for="numerosSorteados">
+                    <strong>20 Números Sorteados:</strong>
+                </label>
+                <div class="example">
+                    Exemplo: 05, 06, 07, 08, 10, 11, 12, 13, 14, 15, 21, 22, 23, 24, 25, 31, 32, 33, 41, 42
+                </div>
+                <input type="text" id="numerosSorteados" placeholder="Ex: 05, 06, 07, 08, 10...">
+            </div>
+            
+            <button id="compararButton" style="background: white; color: #00bcd4; font-weight: bold; border: 2px solid white; padding: 12px 30px; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);">📊 Comparar Resultados</button>
+            
+            <div id="resultadoComparacao" style="margin-top: 20px; padding: 15px; background: white; border-radius: 5px; display: none; color: #333;"></div>
+        </div>
+        
+        <div id="stats" class="stats-box" style="display: none;"></div>
+        
+        <div id="result" class="result-box"></div>
+    </div>
+    
+    <script src="script_lotomania.js"></script>
+</body>
+</html>
